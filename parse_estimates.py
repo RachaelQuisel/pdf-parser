@@ -62,7 +62,7 @@ def process_pdf(pdf_path):
             # Stop conditions
             if not line or any(word in line.lower() for word in STOP_WORDS):
                 break
-            
+
             # Try to match patterns
             for pattern in PATTERNS:
                 match = re.match(pattern, line)
@@ -85,7 +85,7 @@ def process_pdf(pdf_path):
                         })
                         break
     
-    return items, subitems
+    return items, subitems  # FIXED: Moved outside the loops
 
 def main():
     """Main execution function."""
@@ -102,13 +102,10 @@ def main():
     
     for pdf_path in pdf_files:
         print(f"Processing {pdf_path}...")
-        try:
-            items, subitems = process_pdf(pdf_path)
-            all_items.extend(items)
-            all_subitems.extend(subitems)
-            print(f"  - Found {len(items)} items with {len(subitems)} subitems")
-        except Exception as e:
-            print(f"  - Error: {e}")
+        items, subitems = process_pdf(pdf_path)
+        all_items.extend(items)
+        all_subitems.extend(subitems)
+        print(f"  - Found {len(items)} items with {len(subitems)} subitems")
     
     # Save results
     os.makedirs("output", exist_ok=True)
