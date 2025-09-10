@@ -1,1 +1,36 @@
+name: Process PDF from n8n
 
+on:
+  repository_dispatch:
+    types: [process-pdf]
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install pdfplumber pandas
+    
+    - name: Create PDF from base64
+      run: |
+        echo "${{ github.event.client_payload.pdf_base64 }}" | base64 -d > CustomerProposal.pdf
+    
+    - name: Run parser
+      run: |
+        python parse_estimates.py
+        
+    - name: Show results
+      run: |
+        ls -la output/
+        cat output/monday_items.csv
+        cat output/monday_subitems.csv
